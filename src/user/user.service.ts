@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 
-import { CreateUserDto } from './dto/user.dto';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from 'src/user/dto/user.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -24,21 +24,7 @@ export class UserService {
     return response;
   }
 
-  // TEMP //
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
-
-  async findOne(username: string) {
-    return this.users.find((user) => user.username === username);
+  async findOne(user: Partial<User>) {
+    return this.userRepository.findOne(user);
   }
 }

@@ -1,14 +1,19 @@
 import {
-  Body,
   Controller,
+  Body,
   ConflictException,
   BadRequestException,
   Delete,
   Put,
+  Get,
+  NotFoundException,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 
-import { CreateUserDto } from './dto/user.dto';
-import { UserService } from './user.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateUserDto } from 'src/user/dto/user.dto';
+import { UserService } from 'src/user/user.service';
 
 @Controller('user')
 export class UserController {
@@ -29,6 +34,16 @@ export class UserController {
       return await this.userService.delete(id);
     } catch {
       throw new BadRequestException();
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async user(@Query() query: Partial<User>) {
+    try {
+      return await this.userService.findOne(query);
+    } catch {
+      throw new NotFoundException();
     }
   }
 }
